@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Device Information</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f7fc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 500px;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      position: relative;
+    }
+
+    .logo {
+      position: absolute;
+      top: 10px;
+      width: 50px;
+      height: auto;
+      width: 85px;
+    }
+
+    .logo.left {
+      left: 10px;
+    }
+
+    .logo.right {
+      right: 10px;
+    }
+
+    .device-image {
+      width: 120px;
+      height: auto;
+      margin-bottom: 15px;
+      border-radius: 8px;
+    }
+
+    h2 {
+      color: #45A097;
+      margin-bottom: 15px;
+      font-size: 22px;
+    }
+
+    .info {
+      text-align: left;
+      margin-top: 10px;
+    }
+
+    .info p {
+      margin: 10px 0;
+      font-size: 16px;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 5px;
+    }
+
+    .label {
+      font-weight: bold;
+      color: #555;
+    }
+
+    .value {
+      color: #222;
+      font-weight: 500;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 600px) {
+      .container {
+        width: 95%;
+        padding: 15px;
+      }
+
+      .device-image {
+        width: 100px;
+      }
+
+      h2 {
+        font-size: 20px;
+      }
+
+      .info p {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <!-- Left Logo -->
+    <img class="logo left" src="LeftLogo.jpg" alt="Left Icon">
+
+    <!-- Right Logo -->
+    <img class="logo right" src="RightLogo.jpg" alt="Right Logo">
+
+    <!-- Device Image -->
+    <img id="deviceImage" class="device-image" src="default.png" alt="Device Image">
+
+    <!-- Device Information -->
+    <h2 id="Item">Device Information</h2>
+<!--
+    Name,
+      InstanceId,
+      ClassId,
+      Model,
+      ManufacturerName,
+      OwnerName
+      CITag,
+      ReconciliationIdentity,
+      Item,
+    -->
+    <div class="info">
+      <p><span class="label">Name:</span> <span class="value" id="Name">N/A</span></p>
+      <p><span class="label">InstanceId:</span> <span class="value" id="InstanceId">N/A</span></p>
+      <p><span class="label">Model:</span> <span class="value" id="Model">N/A</span></p>
+      <p><span class="label">ManufacturerName:</span> <span class="value" id="ManufacturerName">N/A</span></p>
+      <p><span class="label">OwnerName:</span> <span class="value" id="OwnerName">N/A</span></p>
+      <p><span class="label">CITag:</span> <span class="value" id="CITag">N/A</span></p>
+      <p><span class="label">ReconciliationIdentity:</span> <span class="value" id="ReconciliationIdentity">N/A</span></p>
+    </div>
+  </div>
+
+  <script>
+    // Function to get a query parameter from URL
+    function getQueryParam(param) {
+      var urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    // Function to decode Base64
+    function decodeBase64(encodedString) {
+      try {
+        return decodeURIComponent(atob(encodedString).split('').map(function (c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+      } catch (error) {
+        console.error("Error decoding Base64:", error);
+        return null;
+      }
+    }
+
+    // Extract Base64-encoded device data from URL
+    var encodedData = getQueryParam("data");
+
+    if (encodedData) {
+      var decodedData = decodeBase64(encodedData);
+      if (decodedData) {
+        var deviceInfo = {};
+        decodedData.split(";").forEach(pair => {
+          var [key, value] = pair.split("=");
+          deviceInfo[key.trim()] = value.trim();
+        });
+
+        // Populate HTML with device data
+        document.getElementById("Name").innerText = deviceInfo["Name"] || "N/A";
+        document.getElementById("InstanceId").innerText = deviceInfo["InstanceId"] || "N/A";
+        document.getElementById("Model").innerText = deviceInfo["Model"] || "N/A";
+        document.getElementById("ManufacturerName").innerText = deviceInfo["ManufacturerName"] || "N/A";
+        document.getElementById("OwnerName").innerText = deviceInfo["OwnerName"] || "N/A";
+        document.getElementById("CITag").innerText = deviceInfo["CITag"] || "N/A";
+        document.getElementById("ReconciliationIdentity").innerText = deviceInfo["ReconciliationIdentity"] || "N/A";
+        document.getElementById("Item").innerText = deviceInfo["Item"] || "Device Information";
+
+        // Set the correct device image
+        var deviceType = (deviceInfo["DeviceType"] || "").toLowerCase();
+        var imagePath = "default.png"; // Default image
+        if (deviceType.includes("Printer")) imagePath = "printer2.png";
+        else if (deviceType.includes("Laptop")) imagePath = "laptop.png";
+        else if (deviceType.includes("Desktop")) imagePath = "desktop.png";
+        document.getElementById("deviceImage").src = imagePath;
+      } else {
+        alert("Invalid QR Code data.");
+      }
+    } else {
+      alert("No device information found.");
+    }
+  </script>
+
+</body>
+
+</html>
