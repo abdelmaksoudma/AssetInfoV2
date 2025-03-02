@@ -183,9 +183,9 @@
         // Set the correct device image
         var deviceType = (deviceInfo["Item"] || "").toLowerCase();
         var imagePath = "default.jpg"; // Default image
-        if (deviceType.includes("Printer")) imagePath = "printer2.png";
-        else if (deviceType.includes("Laptop")) imagePath = "laptop.png";
-        else if (deviceType.includes("Desktop")) imagePath = "desktop.png";
+        if (deviceType.includes("printer")) imagePath = "printer2.png";
+        else if (deviceType.includes("laptop")) imagePath = "laptop.png";
+        else if (deviceType.includes("desktop")) imagePath = "desktop.png";
         document.getElementById("deviceImage").src = imagePath;
       } else {
         alert("Invalid QR Code data.");
