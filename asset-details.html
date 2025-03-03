@@ -143,15 +143,17 @@
     <!-- Device Information -->
     <h2 id="Item">Device Information</h2>
     <div class="info">
-      <p><span class="label">Name:</span> <span class="value" id="Name">N/A</span></p>
+      <p><span class="label">Name:</span> <span class="value" id="Name">N/ASA</span></p>
       <p><span class="label">InstanceId:</span> <span class="value" id="InstanceId">N/A</span></p>
       <p><span class="label">Model:</span> <span class="value" id="Model">N/A</span></p>
       <p><span class="label">ManufacturerName:</span> <span class="value" id="ManufacturerName">N/A</span></p>
       <p><span class="label">OwnerName:</span> <span class="value" id="OwnerName">N/A</span></p>
       <p><span class="label">CITag:</span> <span class="value" id="CITag">N/A</span></p>
       <p><span class="label">ReconciliationIdentity:</span> <span class="value" id="ReconciliationIdentity">N/A</span></p>
+                  <p><span class="label">ClassId:</span> <span class="value" id="ClassId">N/A</span></p>
     </div>
-
+                
+                
     <!-- Buttons -->
     <div class="buttons">
       <button id="moreDataButton">More Data</button>
@@ -159,60 +161,65 @@
     </div>
   </div>
 
-  <script>
-    // Function to get a query parameter from URL
-    function getQueryParam(param) {
-      var urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(param);
+<script>
+  // Function to get a query parameter from URL
+  function getQueryParam(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+  }
+
+  // Function to decode Base64
+  function decodeBase64(encodedString) {
+    try {
+      return decodeURIComponent(
+        atob(encodedString)
+          .split("")
+          .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+          .join("")
+      );
+    } catch (error) {
+      console.error("Error decoding Base64:", error);
+      return null;
     }
+  }
 
-    // Function to decode Base64
-    function decodeBase64(encodedString) {
-      try {
-        return decodeURIComponent(atob(encodedString).split('').map(function (c) {
-          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-      } catch (error) {
-        console.error("Error decoding Base64:", error);
-        return null;
-      }
-    }
+  // Extract Base64-encoded device data from URL
+  const encodedData = getQueryParam("data");
 
-    // Extract Base64-encoded device data from URL
-    var encodedData = getQueryParam("data");
+  if (encodedData) {
+    const decodedData = decodeBase64(encodedData);
 
-    if (encodedData) {
-      var decodedData = decodeBase64(encodedData);
-      if (decodedData) {
-        var deviceInfo = {};
-        decodedData.split(";").forEach(pair => {
-          var [key, value] = pair.split("=");
-          deviceInfo[key.trim()] = value.trim();
-        });
+    if (decodedData) {
+      const deviceInfo = {};
+      decodedData.split(";").forEach((pair) => {
+        const [key, value] = pair.split("=");
+        deviceInfo[key.trim()] = value.trim();
+      });
 
-        // Populate HTML with device data
-        document.getElementById("Name").innerText = deviceInfo["Name"] || "N/A";
-        document.getElementById("InstanceId").innerText = deviceInfo["InstanceId"] || "N/A";
-        document.getElementById("Model").innerText = deviceInfo["Model"] || "N/A";
-        document.getElementById("ManufacturerName").innerText = deviceInfo["ManufacturerName"] || "N/A";
-        document.getElementById("OwnerName").innerText = deviceInfo["OwnerName"] || "N/A";
-        document.getElementById("CITag").innerText = deviceInfo["CITag"] || "N/A";
-        document.getElementById("ReconciliationIdentity").innerText = deviceInfo["ReconciliationIdentity"] || "N/A";
-        document.getElementById("Item").innerText = deviceInfo["Item"] || "Device Information";
+      // Populate HTML with device data
+      document.getElementById("Name").innerText = deviceInfo["Name"] || "N/A";
+      document.getElementById("InstanceId").innerText = deviceInfo["InstanceId"] || "N/A";
+      document.getElementById("Model").innerText = deviceInfo["Model"] || "N/A";
+      document.getElementById("ManufacturerName").innerText = deviceInfo["ManufacturerName"] || "N/A";
+      document.getElementById("OwnerName").innerText = deviceInfo["OwnerName"] || "Nv/A";
+      document.getElementById("CITag").innerText = deviceInfo["CITag"] || "N/A";
+      document.getElementById("ReconciliationIdentity").innerText = deviceInfo["ReconciliationIdentity"] || "N/A";
+      document.getElementById("ClassId").innerText = deviceInfo["ClassId"] || "N/A";
+      document.getElementById("Item").innerText = deviceInfo["Item"] || "Device Information";
 
-        // Set the correct device image
-        var deviceType = (deviceInfo["Item"] || "").toLowerCase();
-        var imagePath = "default.jpg"; // Default image
-        if (deviceType.includes("printer")) imagePath = "printer2.png";
-        else if (deviceType.includes("laptop")) imagePath = "laptop.png";
-        else if (deviceType.includes("desktop")) imagePath = "desktop.png";
-        document.getElementById("deviceImage").src = imagePath;
+      // Set the correct device image
+      const deviceType = (deviceInfo["Item"] || "").toLowerCase();
+      let imagePath = "default.jpg"; // Default image
+      if (deviceType.includes("printer")) imagePath = "printer2.png";
+      else if (deviceType.includes("laptop")) imagePath = "laptop.png";
+      else if (deviceType.includes("desktop")) imagePath = "desktop.png";
+      document.getElementById("deviceImage").src = imagePath;
 
-        // Add event listeners to buttons
-        const moreDataButton = document.getElementById("moreDataButton");
-        const reportIssueButton = document.getElementById("reportIssueButton");
+      // Add event listeners to buttons
+      const moreDataButton = document.getElementById("moreDataButton");
+      const reportIssueButton = document.getElementById("reportIssueButton");
 
-        // Redirect to More Data URL
+      if (moreDataButton) {
         moreDataButton.addEventListener("click", () => {
           const reconciliationIdentity = deviceInfo["ReconciliationIdentity"];
           if (reconciliationIdentity) {
@@ -221,19 +228,24 @@
             alert("ReconciliationIdentity not found.");
           }
         });
+      }
 
-        // Redirect to Report Issue URL
+      if (reportIssueButton) {
         reportIssueButton.addEventListener("click", () => {
-          window.location.href = "https://itsm-st-dwp02.moh.gov.sa:8443/dwp/app/#/itemprofile/16610";
+          window.location.href =
+            https://itsm-st-dwp02.moh.gov.sa:8443/dwp/app/#/itemprofile/16610;
         });
-      } else {
-        alert("Invalid QR Code data.");
       }
     } else {
-      alert("No device information found.");
+      alert("Invalid QR Code data.");
     }
-  </script>
+  } else {
+    alert("No device information found.");
+  }
+</script>
+
 
 </body>
 
 </html>
+
