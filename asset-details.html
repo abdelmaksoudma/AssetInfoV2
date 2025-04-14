@@ -143,13 +143,8 @@
     <h2 id="Item">Device Information</h2>
     <div class="info">
       <p><span class="label">Name:</span> <span class="value" id="Name">N/A</span></p>
-      <p><span class="label">InstanceId:</span> <span class="value" id="InstanceId">N/A</span></p>
-      <p><span class="label">Model:</span> <span class="value" id="Model">N/A</span></p>
-      <p><span class="label">ManufacturerName:</span> <span class="value" id="ManufacturerName">N/A</span></p>
-      <p><span class="label">OwnerName:</span> <span class="value" id="OwnerName">N/A</span></p>
       <p><span class="label">CITag:</span> <span class="value" id="CITag">N/A</span></p>
-      <p><span class="label">ReconciliationIdentity:</span> <span class="value" id="ReconciliationIdentity">N/A</span></p>
-      <p><span class="label">ClassId:</span> <span class="value" id="ClassId">N/A</span></p>
+      <p><span class="label">Serial Number:</span> <span class="value" id="SerialNumber">N/A</span></p>
     </div>
 
     <!-- Buttons -->
@@ -184,13 +179,8 @@
     // Function to populate HTML with device data
     function populateDeviceInfo(deviceInfo) {
       document.getElementById("Name").innerText = deviceInfo["Name"] || "N/A";
-      document.getElementById("InstanceId").innerText = deviceInfo["InstanceId"] || "N/A";
-      document.getElementById("Model").innerText = deviceInfo["Model"] || "N/A";
-      document.getElementById("ManufacturerName").innerText = deviceInfo["ManufacturerName"] || "N/A";
-      document.getElementById("OwnerName").innerText = deviceInfo["OwnerName"] || "N/A";
       document.getElementById("CITag").innerText = deviceInfo["CITag"] || "N/A";
-      document.getElementById("ReconciliationIdentity").innerText = deviceInfo["ReconciliationIdentity"] || "N/A";
-      document.getElementById("ClassId").innerText = deviceInfo["ClassId"] || "N/A";
+      document.getElementById("SerialNumber").innerText = deviceInfo["SerialNumber"] || "N/A";
       document.getElementById("Item").innerText = deviceInfo["Item"] || "Device Information";
 
       // Set the correct device image
